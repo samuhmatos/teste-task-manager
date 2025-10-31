@@ -1,98 +1,277 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Task Manager
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Aplicação de gerenciamento de tarefas construída com NestJS, TypeORM e PostgreSQL.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 📋 Pré-requisitos
 
-## Description
+Antes de começar, certifique-se de ter instalado:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- [Docker](https://www.docker.com/get-started) (versão 20.10 ou superior)
+- [Docker Compose](https://docs.docker.com/compose/install/) (versão 2.0 ou superior)
+- [Node.js](https://nodejs.org/) (versão 22 ou superior) - apenas para desenvolvimento local
+- [Yarn](https://yarnpkg.com/) - apenas para desenvolvimento local
 
-## Project setup
+## 🚀 Como rodar o projeto
+
+### Opção 1: Usando Docker Compose (Recomendado)
+
+Esta é a forma mais simples de executar o projeto:
+
+1. **Clone o repositório** (se ainda não tiver feito):
+
+   ```bash
+   git clone https://github.com/samuhmatos/teste-task-manager.git
+   cd task-manager
+   ```
+
+2. **Crie um arquivo `.env` na raiz do projeto** com as seguintes variáveis:
+
+   ```env
+   DATABASE_USERNAME=postgres
+   DATABASE_PASSWORD=sua_senha_aqui
+   DATABASE_DATABASE=task_manager
+   DATABASE_PORT=5432
+   APP_PORT=3000
+   NODE_ENV=production
+   DATABASE_LOGGING=false
+   ```
+
+3. **Construa e inicie os containers**:
+
+   ```bash
+   docker-compose up -d --build
+   ```
+
+4. **Execute as migrations**:
+
+   ```bash
+   docker-compose exec app yarn typeorm migration:run -d dist/database/data-source.js
+   ```
+
+5. **Acesse a aplicação**:
+   - API: http://localhost:3000
+   - Banco de dados PostgreSQL: localhost:5432
+
+### Opção 2: Desenvolvimento Local (sem Docker)
+
+Se preferir rodar localmente sem Docker:
+
+1. **Instale as dependências**:
+
+   ```bash
+   yarn install
+   ```
+
+2. **Configure um banco de dados PostgreSQL** local ou remoto e crie um arquivo `.env`:
+
+   ```env
+   DATABASE_HOST=localhost
+   DATABASE_PORT=5432
+   DATABASE_USERNAME=seu_usuario
+   DATABASE_PASSWORD=sua_senha
+   DATABASE_DATABASE=task_manager
+   APP_PORT=3000
+   NODE_ENV=development
+   DATABASE_LOGGING=true
+   ```
+
+3. **Compile o projeto**:
+
+   ```bash
+   yarn build
+   ```
+
+4. **Execute as migrations**:
+
+   ```bash
+   yarn migration:run
+   ```
+
+5. **Inicie a aplicação em modo desenvolvimento**:
+
+   ```bash
+   yarn start:dev
+   ```
+
+   Ou em modo produção:
+
+   ```bash
+   yarn start:prod
+   ```
+
+## 📦 Variáveis de Ambiente
+
+| Variável              | Descrição                         | Padrão                          | Obrigatória |
+| --------------------- | --------------------------------- | ------------------------------- | ----------- |
+| `DATABASE_HOST`       | Host do banco de dados PostgreSQL | -                               | Sim         |
+| `DATABASE_PORT`       | Porta do banco de dados           | `5432`                          | Não         |
+| `DATABASE_USERNAME`   | Usuário do banco de dados         | -                               | Sim         |
+| `DATABASE_PASSWORD`   | Senha do banco de dados           | -                               | Sim         |
+| `DATABASE_DATABASE`   | Nome do banco de dados            | -                               | Sim         |
+| `DATABASE_LOGGING`    | Habilitar logs do TypeORM         | `false`                         | Não         |
+| `DATABASE_MIGRATIONS` | Caminho das migrations            | `dist/database/migrations/*.js` | Não         |
+| `APP_PORT`            | Porta da aplicação                | `3000`                          | Não         |
+| `NODE_ENV`            | Ambiente de execução              | `production`                    | Não         |
+
+## 🔧 Comandos Disponíveis
+
+### Desenvolvimento
 
 ```bash
-$ yarn install
+# Instalar dependências
+yarn install
+
+# Executar em modo desenvolvimento (watch mode)
+yarn start:dev
+
+# Executar em modo debug
+yarn start:debug
+
+# Compilar o projeto
+yarn build
+
+# Executar em modo produção
+yarn start:prod
 ```
 
-## Compile and run the project
+### Testes
 
 ```bash
-# development
-$ yarn run start
+# Executar testes unitários
+yarn test
 
-# watch mode
-$ yarn run start:dev
+# Executar testes em watch mode
+yarn test:watch
 
-# production mode
-$ yarn run start:prod
+# Executar testes com coverage
+yarn test:cov
+
+# Executar testes e2e
+yarn test:e2e
 ```
 
-## Run tests
+### Migrations
 
 ```bash
-# unit tests
-$ yarn run test
+# Executar migrations (local)
+yarn migration:run
 
-# e2e tests
-$ yarn run test:e2e
+# Executar migrations (dentro do container)
+docker-compose exec app yarn typeorm migration:run -d dist/database/data-source.js
 
-# test coverage
-$ yarn run test:cov
+# Reverter última migration
+yarn migration:revert
+# ou dentro do container:
+docker-compose exec app yarn typeorm migration:revert -d dist/database/data-source.js
+
+# Criar nova migration
+yarn migration:create NomeDaMigration
+
+# Gerar migration a partir das entidades
+yarn migration:generate
+
+# Dropar schema do banco
+yarn migration:drop
+
+# Recriar schema (drop + run)
+yarn migration:recreate
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Qualidade de Código
 
 ```bash
-$ yarn install -g @nestjs/mau
-$ mau deploy
+# Executar linter
+yarn lint
+
+# Formatar código
+yarn format
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 🐳 Comandos Docker Úteis
 
-## Resources
+```bash
+# Construir e iniciar os containers
+docker-compose up -d --build
 
-Check out a few resources that may come in handy when working with NestJS:
+# Parar os containers
+docker-compose down
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# Parar e remover volumes (apaga dados do banco)
+docker-compose down -v
 
-## Support
+# Ver logs da aplicação
+docker-compose logs -f app
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+# Ver logs do banco de dados
+docker-compose logs -f db
 
-## Stay in touch
+# Executar comando dentro do container da aplicação
+docker-compose exec app <comando>
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+# Acessar shell do container da aplicação
+docker-compose exec app sh
 
-## License
+# Rebuildar apenas o container da aplicação
+docker-compose up -d --build app
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## 📁 Estrutura do Projeto
+
+```
+task-manager/
+├── src/
+│   ├── database/          # Configuração do banco de dados e migrations
+│   ├── domain/            # Módulos de domínio (tasks, auth, etc)
+│   ├── shared/            # Código compartilhado
+│   ├── app.module.ts      # Módulo principal
+│   └── main.ts            # Entry point da aplicação
+├── test/                  # Testes e2e
+├── scripts/               # Scripts auxiliares
+├── docker-compose.yml     # Configuração Docker Compose
+├── Dockerfile             # Imagem Docker da aplicação
+└── package.json           # Dependências e scripts
+```
+
+## 🔍 Troubleshooting
+
+### Problema: Container não inicia
+
+- Verifique se as variáveis de ambiente estão configuradas corretamente no arquivo `.env`
+- Verifique se as portas 3000 e 5432 não estão em uso:
+  ```bash
+  lsof -i :3000
+  lsof -i :5432
+  ```
+
+### Problema: Migrations não executam
+
+- Certifique-se de que o banco de dados está rodando e acessível
+- Verifique se o caminho das migrations está correto no `.env`
+- Execute manualmente dentro do container:
+  ```bash
+  docker-compose exec app yarn typeorm migration:run -d dist/database/data-source.js
+  ```
+
+### Problema: Erro de conexão com o banco
+
+- Verifique se o container do banco está rodando: `docker-compose ps`
+- Verifique os logs do banco: `docker-compose logs db`
+- Certifique-se de que o `DATABASE_HOST` está correto (use `db` dentro do Docker Compose)
+
+## 📝 Notas Importantes
+
+- O comando de migration **dentro do container** deve ser executado com o caminho completo: `yarn typeorm migration:run -d dist/database/data-source.js`
+- Os dados do banco PostgreSQL são persistidos no diretório `./data/db-data` (criado automaticamente)
+- A aplicação usa timezone `America/Sao_Paulo` por padrão
+
+## 📚 Tecnologias Utilizadas
+
+- **NestJS** - Framework Node.js
+- **TypeORM** - ORM para TypeScript/JavaScript
+- **PostgreSQL** - Banco de dados relacional
+- **Docker** - Containerização
+- **Yarn** - Gerenciador de pacotes
+
+## 📄 Licença
+
+Este projeto é privado e não possui licença pública.
