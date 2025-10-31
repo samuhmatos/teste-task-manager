@@ -1,6 +1,8 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { entities } from './database.config';
 
+@Global()
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -20,6 +22,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
           logging: process.env.DATABASE_LOGGING === 'true',
           logger: process.env.DATABASE_LOGGING === 'true' ? 'file' : undefined,
           applicationName: 'task-manager',
+          entities,
         };
       },
     }),
