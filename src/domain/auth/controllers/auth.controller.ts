@@ -1,3 +1,4 @@
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -6,13 +7,11 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthService } from '../services/auth.service';
-import { SignInDto, SignUpDto } from '../dtos';
-import { ReturnAuthDto } from '../dtos';
-import { Controller, Get, Post, Req } from '@nestjs/common';
-import { Body } from '@nestjs/common';
-import { Auth } from '../decorators/jwt-auth.decorator';
 import { ReturnUserDto } from 'src/domain/user/dtos';
+import { User } from 'src/domain/user/entities/user.entity';
+import { Auth, CurrentUser } from '../decorators';
+import { ReturnAuthDto, SignInDto, SignUpDto } from '../dtos';
+import { AuthService } from '../services/auth.service';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -54,7 +53,7 @@ export class AuthController {
     type: ReturnUserDto,
   })
   @Get('me')
-  me(@Req() req: Request): ReturnUserDto {
-    return new ReturnUserDto(req.user);
+  me(@CurrentUser() user: User): ReturnUserDto {
+    return new ReturnUserDto(user);
   }
 }

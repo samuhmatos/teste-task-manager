@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { TaskModule } from './task/task.module';
 
-const modules = [UserModule, AuthModule];
 @Module({
-  imports: [...modules],
+  imports: [UserModule, AuthModule, TaskModule],
 })
 export class DomainModule {}

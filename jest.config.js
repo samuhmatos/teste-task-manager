@@ -12,6 +12,7 @@ module.exports = {
   collectCoverageFrom: [
     '**/*.(t|j)s',
     '!**/*.interface.(t|j)s',
+    '!**/*.controller.(t|j)s',
     '!**/tests/**',
     '!**/*.enum.(t|j)s',
     '!**/index.(t|j)s',
