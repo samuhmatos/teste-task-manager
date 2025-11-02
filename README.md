@@ -27,29 +27,37 @@ Esta é a forma mais simples de executar o projeto:
 2. **Crie um arquivo `.env` na raiz do projeto** com as seguintes variáveis:
 
    ```env
+   APP_PORT=3001
+   DATABASE_HOST=localhost
    DATABASE_USERNAME=postgres
-   DATABASE_PASSWORD=sua_senha_aqui
-   DATABASE_DATABASE=task_manager
+   DATABASE_PASSWORD=123
+   DATABASE_DATABASE=task
    DATABASE_PORT=5432
-   APP_PORT=3000
-   NODE_ENV=production
    DATABASE_LOGGING=false
+   DATABASE_MIGRATIONS=dist/**/migrations/**/*.js
    ```
 
-3. **Construa e inicie os containers**:
+3. **Crie a rede Docker necessária**:
+
+   ```bash
+   docker network create task-network
+   ```
+
+4. **Construa e inicie os containers**:
 
    ```bash
    docker-compose up -d --build
    ```
 
-4. **Execute as migrations**:
+5. **Execute as migrations**:
 
    ```bash
    docker-compose exec app yarn typeorm migration:run -d dist/database/data-source.js
    ```
 
-5. **Acesse a aplicação**:
-   - API: http://localhost:3000
+6. **Acesse a aplicação**:
+   - API: http://localhost:3001
+   - Documentação swagger http://localhost:3001/docs
    - Banco de dados PostgreSQL: localhost:5432
 
 ### Opção 2: Desenvolvimento Local (sem Docker)
@@ -65,14 +73,14 @@ Se preferir rodar localmente sem Docker:
 2. **Configure um banco de dados PostgreSQL** local ou remoto e crie um arquivo `.env`:
 
    ```env
+   APP_PORT=3001
    DATABASE_HOST=localhost
+   DATABASE_USERNAME=postgres
+   DATABASE_PASSWORD=123
+   DATABASE_DATABASE=task
    DATABASE_PORT=5432
-   DATABASE_USERNAME=seu_usuario
-   DATABASE_PASSWORD=sua_senha
-   DATABASE_DATABASE=task_manager
-   APP_PORT=3000
-   NODE_ENV=development
-   DATABASE_LOGGING=true
+   DATABASE_LOGGING=false
+   DATABASE_MIGRATIONS=dist/**/migrations/**/*.js
    ```
 
 3. **Compile o projeto**:
@@ -98,20 +106,6 @@ Se preferir rodar localmente sem Docker:
    ```bash
    yarn start:prod
    ```
-
-## 📦 Variáveis de Ambiente
-
-| Variável              | Descrição                         | Padrão                          | Obrigatória |
-| --------------------- | --------------------------------- | ------------------------------- | ----------- |
-| `DATABASE_HOST`       | Host do banco de dados PostgreSQL | -                               | Sim         |
-| `DATABASE_PORT`       | Porta do banco de dados           | `5432`                          | Não         |
-| `DATABASE_USERNAME`   | Usuário do banco de dados         | -                               | Sim         |
-| `DATABASE_PASSWORD`   | Senha do banco de dados           | -                               | Sim         |
-| `DATABASE_DATABASE`   | Nome do banco de dados            | -                               | Sim         |
-| `DATABASE_LOGGING`    | Habilitar logs do TypeORM         | `false`                         | Não         |
-| `DATABASE_MIGRATIONS` | Caminho das migrations            | `dist/database/migrations/*.js` | Não         |
-| `APP_PORT`            | Porta da aplicação                | `3000`                          | Não         |
-| `NODE_ENV`            | Ambiente de execução              | `production`                    | Não         |
 
 ## 🔧 Comandos Disponíveis
 
@@ -236,10 +230,14 @@ task-manager/
 
 ### Problema: Container não inicia
 
-- Verifique se as variáveis de ambiente estão configuradas corretamente no arquivo `.env`
-- Verifique se as portas 3000 e 5432 não estão em uso:
+- Verifique se a rede Docker `task-network` foi criada:
   ```bash
-  lsof -i :3000
+  docker network create task-network
+  ```
+- Verifique se as variáveis de ambiente estão configuradas corretamente no arquivo `.env`
+- Verifique se as portas 3001 e 5432 não estão em uso:
+  ```bash
+  lsof -i :3001
   lsof -i :5432
   ```
 

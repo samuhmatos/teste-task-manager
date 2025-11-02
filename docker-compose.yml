@@ -16,6 +16,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - task-network
 
   app:
     build:
@@ -30,11 +32,17 @@ services:
       DATABASE_DATABASE: ${DATABASE_DATABASE}
       DATABASE_LOGGING: ${DATABASE_LOGGING:-false}
       DATABASE_MIGRATIONS: ${DATABASE_MIGRATIONS:-dist/database/migrations/*.js}
-      APP_PORT: ${APP_PORT:-3000}
+      APP_PORT: ${APP_PORT:-3001}
       NODE_ENV: ${NODE_ENV:-production}
     ports:
-      - '${APP_PORT:-3000}:3000'
+      - '${APP_PORT:-3001}:3000'
     depends_on:
       db:
         condition: service_healthy
     restart: unless-stopped
+    networks:
+      - task-network
+
+networks:
+  task-network:
+    external: true
