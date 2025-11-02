@@ -41,6 +41,10 @@ COPY --from=build --chown=nodejs:nodejs /usr/src/app/dist ./dist
 COPY --from=build --chown=nodejs:nodejs /usr/src/app/node_modules ./node_modules
 COPY --from=build --chown=nodejs:nodejs /usr/src/app/package.json ./package.json
 
+RUN mkdir -p /usr/src/app/logs && \
+    chown -R nodejs:nodejs /usr/src/app && \
+    chmod -R 755 /usr/src/app
+
 EXPOSE 3000
 
 USER nodejs
